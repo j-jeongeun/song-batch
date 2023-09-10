@@ -22,8 +22,8 @@ public class SongBatchApplication {
 	@PostConstruct
 	public void executeSong() throws ParseException {
 		ExecuteSong executeSong = new ExecuteSong(songService);
-		executeSong.execute(BrandType.kumyoung);
-		executeSong.execute(BrandType.tj);
+		executeSong.execute(BrandType.KUMYOUNG);
+		executeSong.execute(BrandType.TJ);
 	}
 
 }

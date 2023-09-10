@@ -1,7 +1,5 @@
 package project.songbatch.song;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -30,19 +28,22 @@ public class ExecuteSong {
 
         log.info("getSongList("+brandType+") size: {}", jsonArray.size());
 
-        List<Song> songList = new ArrayList<>();
+        int executionCnt = 0; // 새롭게 insert된 노래 수
         for (Object object : jsonArray) {
             JSONObject jsonObject = (JSONObject) object;
-            BrandType brand = BrandType.valueOf(jsonObject.get("brand").toString());
+            BrandType brand = BrandType.valueOf(jsonObject.get("brand").toString().toUpperCase());
             Long no = Long.parseLong(jsonObject.get("no").toString());
             String title = jsonObject.get("title").toString();
             String singer = jsonObject.get("singer").toString();
 
             Song song = new Song(brand, no, title, singer);
-            songList.add(song);
+            if(songService.findBySongId(song).isEmpty()) {
+                songService.create(song);
+                executionCnt++;
+            }
         }
 
-        songService.create(songList);
+        log.info("new insert song("+brandType+") size: {}", executionCnt);
 
         return ResponseEntity.ok().build();
     }
